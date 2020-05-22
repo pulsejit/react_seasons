@@ -18,27 +18,36 @@ class App extends React.Component {
   // now so we need something which will execute at first so that we can initialize the constractor at the begenning of our class
   // constractor
   constructor(props) {
-    
     // and we have tp call the super class **required
     super(props);
-    
+
     // this is creating a state object with lat inside it with initialized default null value
     // WE CAN ONLY INITIALIZE this.state this way only once here
-    this.state = { lat: null };
 
-// now if we are trying to use this inside a normal function decleration then itt won't access the React.component class we 
-// nee to use it inside the call back or i would say arrow function
+    //to handle error again we rerender our jsx
+
+    this.state = { lat: null, errorMessage: "" };
+
+    // now if we are trying to use this inside a normal function decleration then itt won't access the React.component class we
+    // nee to use it inside the call back or i would say arrow function
 
     window.navigator.geolocation.getCurrentPosition(
-      pos=>{
-        this.setState({lat:pos.coords.latitude});
+      pos => {
+        this.setState({ lat: pos.coords.latitude });
       },
-      err=>{
-        console.log(err);
+      err => {
+        // console.log(err);
+        this.setState({ errorMessage: err.message });
       }
     );
+  }
 
-
+  //lifecycle methods 
+  componentDidMount(){
+    console.log('this is where my componet gets rendered');
+  }
+  componentDidUpdate(){
+    console.log('my elemets are getting updated');
   }
   render() {
     // from next on we wont be writing anything inside the render function
@@ -54,7 +63,28 @@ class App extends React.Component {
     // }
     // window.navigator.geolocation.getCurrentPosition(success, error);
 
-    return <div>lattitude:{this.state.lat}</div>;
+    // return (
+    //   <div>
+    //     {/* in order to use conditional statement we need to return in every condition */}
+    //     {/* lattitude:{this.state.lat}
+    //     <br/>
+    //     E R R O R: {this.state.errorMessage} */}
+    //     {this.state.lat}
+    //     {this.state.errorMessage}
+        
+    //   </div>
+    // );
+
+    // this is called conditional rendering
+    if(this.state.lat && !this.state.errorMessage){
+      return <div>L A T I T U D E : {this.state.lat}</div>
+    }
+    
+    if(!this.state.lat && this.state.errorMessage){
+      return <div>E R R O R : {this.state.errorMessage}</div>
+    }
+
+    return <div>LOADING...</div>
   }
 }
 
