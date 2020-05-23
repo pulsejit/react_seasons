@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import SeasonDisplay from './SeasonDisplay';
 
 // let App = function() {
 //   // geolocation api start
@@ -17,20 +18,39 @@ import ReactDOM from "react-dom";
 class App extends React.Component {
   // now so we need something which will execute at first so that we can initialize the constractor at the begenning of our class
   // constractor
-  constructor(props) {
-    // and we have tp call the super class **required
-    super(props);
 
-    // this is creating a state object with lat inside it with initialized default null value
-    // WE CAN ONLY INITIALIZE this.state this way only once here
+  // constructor(props) {
+  //   // and we have tp call the super class **required
+  //   super(props);
 
-    //to handle error again we rerender our jsx
+  //   // this is creating a state object with lat inside it with initialized default null value
+  //   // WE CAN ONLY INITIALIZE this.state this way only once here
 
-    this.state = { lat: null, errorMessage: "" };
+  //   //to handle error again we rerender our jsx
 
-    // now if we are trying to use this inside a normal function decleration then itt won't access the React.component class we
-    // nee to use it inside the call back or i would say arrow function
+  //   this.state = { lat: null, errorMessage: "" };
 
+  //   // now if we are trying to use this inside a normal function decleration then itt won't access the React.component class we
+  //   // nee to use it inside the call back or i would say arrow function
+
+  //   // window.navigator.geolocation.getCurrentPosition(
+  //   //   pos => {
+  //   //     this.setState({ lat: pos.coords.latitude });
+  //   //   },
+  //   //   err => {
+  //   //     // console.log(err);
+  //   //     this.setState({ errorMessage: err.message });
+  //   //   }
+  //   // );
+
+  //   // well the best practices says that we should use lifecycle methods in order to do some data loading
+  // }
+
+  // so there is another alternate method to declere states in react which is mostly used btw...
+  state = {lat:null, errorMessage:''};
+
+  //lifecycle methods 
+  componentDidMount(){
     window.navigator.geolocation.getCurrentPosition(
       pos => {
         this.setState({ lat: pos.coords.latitude });
@@ -42,13 +62,8 @@ class App extends React.Component {
     );
   }
 
-  //lifecycle methods 
-  componentDidMount(){
-    console.log('this is where my componet gets rendered');
-  }
-  componentDidUpdate(){
-    console.log('my elemets are getting updated');
-  }
+
+
   render() {
     // from next on we wont be writing anything inside the render function
 
@@ -77,7 +92,8 @@ class App extends React.Component {
 
     // this is called conditional rendering
     if(this.state.lat && !this.state.errorMessage){
-      return <div>L A T I T U D E : {this.state.lat}</div>
+      // here we need to write the instance otherwise we can't access the component 
+      return <SeasonDisplay lat={this.state.lat} /> //and we also need to pass the state variable as a property to the seasonDisplay in order to access it from there
     }
     
     if(!this.state.lat && this.state.errorMessage){
