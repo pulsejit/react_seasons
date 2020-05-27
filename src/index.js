@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import SeasonDisplay from './SeasonDisplay';
+import SeasonDisplay from "./SeasonDisplay";
+import Spinner from "./Spinner";
 
 // let App = function() {
 //   // geolocation api start
@@ -47,10 +48,10 @@ class App extends React.Component {
   // }
 
   // so there is another alternate method to declere states in react which is mostly used btw...
-  state = {lat:null, errorMessage:''};
+  state = { lat: null, errorMessage: "" };
 
-  //lifecycle methods 
-  componentDidMount(){
+  //lifecycle methods
+  componentDidMount() {
     window.navigator.geolocation.getCurrentPosition(
       pos => {
         this.setState({ lat: pos.coords.latitude });
@@ -62,11 +63,24 @@ class App extends React.Component {
     );
   }
 
+  // now whenever we are using conditional return statements we should put them is some fixed place
+  // helper function is the answer of the abobe
+  seasonHelper() {
+    // this is called conditional rendering
+    if (this.state.lat && !this.state.errorMessage) {
+      // here we need to write the instance otherwise we can't access the component
+      return <SeasonDisplay lat={this.state.lat} />; //and we also need to pass the state variable as a property to the seasonDisplay in order to access it from there
+    }
 
+    if (!this.state.lat && this.state.errorMessage) {
+      return <div>E R R O R : {this.state.errorMessage}</div>;
+    }
+
+    return <Spinner message="please enable your browsers gps" />;
+  }
 
   render() {
     // from next on we wont be writing anything inside the render function
-
     // function success(pos) {
     //   console.log(pos);
     //   // DO NOT EVER USE direct assignment to the this.state always use setState()
@@ -77,7 +91,6 @@ class App extends React.Component {
     //   console.log(err);
     // }
     // window.navigator.geolocation.getCurrentPosition(success, error);
-
     // return (
     //   <div>
     //     {/* in order to use conditional statement we need to return in every condition */}
@@ -86,21 +99,13 @@ class App extends React.Component {
     //     E R R O R: {this.state.errorMessage} */}
     //     {this.state.lat}
     //     {this.state.errorMessage}
-        
     //   </div>
     // );
-
-    // this is called conditional rendering
-    if(this.state.lat && !this.state.errorMessage){
-      // here we need to write the instance otherwise we can't access the component 
-      return <SeasonDisplay lat={this.state.lat} /> //and we also need to pass the state variable as a property to the seasonDisplay in order to access it from there
-    }
-    
-    if(!this.state.lat && this.state.errorMessage){
-      return <div>E R R O R : {this.state.errorMessage}</div>
-    }
-
-    return <div>LOADING...</div>
+    return(
+      <div className="season-div">
+        {this.seasonHelper()}
+      </div>
+    );
   }
 }
 
